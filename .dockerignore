@@ -1,0 +1,5 @@
+*
+!plugins/
+!utils/
+!requirements.txt
+!whichCDN.py
