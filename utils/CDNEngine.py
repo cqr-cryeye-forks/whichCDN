@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-from __future__ import print_function
 import sys
 
 CDN = {
@@ -21,16 +18,7 @@ CDN = {
 }
 
 def find(data):
-    """
-    Compares the provided data to the CDN supported.
-
-    Parameters
-    ----------
-    data : str
-        Data to analyze
-    """
-
     for keyword, description in CDN.items():
-        if data.find(keyword.lower()) != -1:
+        if keyword.lower() in data:
             print('\033[1;32mCDN found: ' + description + '\033[1;m\n')
-            sys.exit(0)
+            # sys.exit(0)

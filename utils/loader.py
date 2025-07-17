@@ -1,38 +1,16 @@
-#!/usr/bin/env python
+import importlib.util
+import pathlib
 
-import imp
-import os
+from utils.paths import PLUGIN_FOLDER
 
-PluginFolder = "./plugins"
-MainModule = "__init__"
 
-def getPlugins():
-    """
-    List the plugins located in the plugins folder.
-    """
+def get_plugins() -> list[str]:
+    return [d.name for d in PLUGIN_FOLDER.iterdir() if (d / "behaviors.py").exists()]
 
-    plugins = []
-    pluginList = os.listdir(PluginFolder)
-    for pluginName in pluginList:
-        location = os.path.join(PluginFolder, pluginName)
-        if not os.path.isdir(location) or not MainModule + ".py" in os.listdir(location):
-            continue
-        info = imp.find_module(MainModule, [location])
-        plugins.append({"name": pluginName, "info": info})
-    return plugins
 
-def loadPlugin(plugin):
-    """
-    Loads the specified plugin.
-
-    Parameters
-    ----------
-    plugin : Plugin
-        Plugin to load
-
-    Return
-    ------
-    The plugin loaded
-    """
-
-    return imp.load_module(MainModule, *plugin["info"])
+def load_plugin(name: str):
+    path = PLUGIN_FOLDER / name / "behaviors.py"
+    spec = importlib.util.spec_from_file_location(f"plugins.{name}.behaviors", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
